@@ -1,133 +1,130 @@
 package com.example.demo.controllers;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.example.demo.models.Tour;
-import com.example.demo.models.TourDto;
-import com.example.demo.services.TourRepository;
-
+import com.example.demo.models.User;
+import com.example.demo.repositories.TourRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/tours")
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/tours")
+@CrossOrigin(origins = "*")
 public class TourController {
 
     @Autowired
-    public TourRepository repo;
+    private TourRepository tourRepository;
 
-    @GetMapping({"", "/"})
-    public String showProductList(Model model) {
-        // Lấy danh sách tất cả các tour từ database
-        List<Tour> tours = repo.findAll();
+    // Public: Xem danh sách tour
+    @GetMapping
+    public ResponseEntity<List<Tour>> getAllTours() {
+        List<Tour> tours = tourRepository.findAll();
+        return ResponseEntity.ok(tours);
+    }
+
+    // Public: Xem chi tiết tour
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTourById(@PathVariable int id) {
+        return tourRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Admin: Tạo tour mới
+    @PostMapping
+    public ResponseEntity<?> createTour(@Valid @RequestBody Tour tour) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) auth.getPrincipal();
         
-        // Thêm danh sách tours vào model với key "tours"
-        model.addAttribute("tours", tours);
-
-        // Trả về view "tours/index"
-        return "tours/index";
-    }
-    
-    @GetMapping("/create")
-    public String showCreateTour(Model model) {
-    	TourDto tourDto = new TourDto(); // Đảm bảo khởi tạo đối tượng TourDto
-    	model.addAttribute("tourDto", tourDto);  // Thêm vào model với key "tourDto"
-    	return "tours/CreateTour";
-    }
-    
-    @PostMapping("/create")
-    public String createTour(@Valid @ModelAttribute TourDto tourDto, BindingResult result) {
-        if (result.hasErrors()) {
-            // Nếu có lỗi khi validate, quay lại trang tạo tour với lỗi
-            return "tours/CreateTour";
+        if (!"ADMIN".equals(currentUser.getRole())) {
+            return ResponseEntity.status(403).body("Access denied");
         }
 
-        // Chuyển đổi TourDto sang Tour để lưu vào cơ sở dữ liệu
-        Tour tour = new Tour();
-        tour.setName(tourDto.getName());
-        tour.setDescription(tourDto.getDescription());
-        tour.setPrice(tourDto.getPrice());
-        tour.setDuration(tourDto.getDuration());
-        tour.setLocation(tourDto.getLocation());
-
-        // Lưu tour vào cơ sở dữ liệu
-        repo.save(tour);
-
-        // Quay lại trang danh sách các tour
-        return "redirect:/tours";
+        tour.setCreatedAt(LocalDateTime.now());
+        Tour savedTour = tourRepository.save(tour);
+        return ResponseEntity.ok(savedTour);
     }
-    
-    @GetMapping("/edit/{id}")
-    public String showEditTour(Model model, @PathVariable int id) {
-        try {
-            Tour tour = repo.findById(id).orElseThrow(() -> new Exception("Tour không tìm thấy"));
-            model.addAttribute("tour", tour);  // Đảm bảo tour được thêm vào model
-            return "tours/EditTour";  // Đảm bảo trả về view "tours/EditTour"
-        } catch (Exception ex) {
-            System.out.println("Exception: " + ex.getMessage());
-            return "redirect:/tours";  // Nếu có lỗi, quay lại trang danh sách tour
+
+    // Admin: Cập nhật tour
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTour(@PathVariable int id, @Valid @RequestBody Tour tourDetails) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) auth.getPrincipal();
+        
+        if (!"ADMIN".equals(currentUser.getRole())) {
+            return ResponseEntity.status(403).body("Access denied");
         }
+
+        return tourRepository.findById(id)
+                .map(tour -> {
+                    tour.setName(tourDetails.getName());
+                    tour.setDescription(tourDetails.getDescription());
+                    tour.setPrice(tourDetails.getPrice());
+                    tour.setDuration(tourDetails.getDuration());
+                    tour.setLocation(tourDetails.getLocation());
+                    // Không cập nhật createdAt
+                    Tour updatedTour = tourRepository.save(tour);
+                    return ResponseEntity.ok(updatedTour);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    
-    @PostMapping("/edit")
-    public String updateProduct(@Valid @ModelAttribute TourDto tourDto, BindingResult result, @RequestParam int id, Model model) {
-        if (result.hasErrors()) {
-            // Nếu có lỗi khi validate, quay lại trang chỉnh sửa với lỗi
-            return "tours/EditTour";
+    // Admin: Xóa tour
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTour(@PathVariable int id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) auth.getPrincipal();
+        
+        if (!"ADMIN".equals(currentUser.getRole())) {
+            return ResponseEntity.status(403).body("Access denied");
+        }
+
+        return tourRepository.findById(id)
+                .map(tour -> {
+                    tourRepository.delete(tour);
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message", "Tour deleted successfully");
+                    return ResponseEntity.ok(response);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // User & Admin: Tìm kiếm tour theo location
+    @GetMapping("/search")
+    public ResponseEntity<List<Tour>> searchTours(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice) {
+        
+        List<Tour> tours = tourRepository.findAll();
+        
+        // Lọc theo các tiêu chí
+        if (location != null && !location.isEmpty()) {
+            tours = tours.stream()
+                    .filter(tour -> tour.getLocation().toLowerCase().contains(location.toLowerCase()))
+                    .toList();
         }
         
-        try {
-            // Lấy tour theo id
-        	Tour tour = repo.findById(id).get();
-        	
-        	if (tour == null) {
-        		// Nếu không tìm thấy tour, quay lại danh sách
-        		return "redirect:/tours";
-        	}
-
-            // Cập nhật thông tin tour từ tourDto
-        	tour.setName(tourDto.getName());
-        	tour.setDescription(tourDto.getDescription());
-            tour.setPrice(tourDto.getPrice());
-            tour.setDuration(tourDto.getDuration());
-            tour.setLocation(tourDto.getLocation());
-
-            // Lưu lại thông tin tour đã cập nhật
-            repo.save(tour);
-        } catch (Exception ex) {
-        	System.out.println("Exception: " + ex.getMessage());
-        	return "redirect:/tours";  // Nếu có lỗi, quay lại danh sách tour
+        if (minPrice != null) {
+            tours = tours.stream()
+                    .filter(tour -> tour.getPrice() >= minPrice)
+                    .toList();
         }
         
-        // Quay lại trang danh sách tour sau khi chỉnh sửa thành công
-        return "redirect:/tours";
-    }
-    
-    
-    // Xử lý xóa tour
-    @PostMapping("/delete")
-    public String deleteTour(@RequestParam int id) {
-        try {
-            Tour tour = repo.findById(id).orElse(null);
-            if (tour != null) {
-                repo.delete(tour);
-            }
-        } catch (Exception ex) {
-            System.out.println("Exception: " + ex.getMessage());
+        if (maxPrice != null) {
+            tours = tours.stream()
+                    .filter(tour -> tour.getPrice() <= maxPrice)
+                    .toList();
         }
-        return "redirect:/tours";  // Sau khi xóa, quay lại trang danh sách
+        
+        return ResponseEntity.ok(tours);
     }
-
 }

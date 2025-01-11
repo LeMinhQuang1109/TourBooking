@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header('Bookings')">
+</head>
+<body>
+    <nav th:replace="fragments/header :: navbar"></nav>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Booking Management</h2>
+
+        <!-- Booking Status Filter -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <select class="form-select" id="statusFilter" onchange="filterBookings()">
+                    <option value="">All Statuses</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tour</th>
+                                <th>User</th>
+                                <th>Booking Date</th>
+                                <th>People</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="booking : ${bookings}">
+                                <td th:text="${booking.id}">1</td>
+                                <td th:text="${booking.tour.name}">Tour Name</td>
+                                <td th:text="${booking.user.username}">Username</td>
+                                <td th:text="${#temporals.format(booking.bookingDate, 'dd-MM-yyyy HH:mm')}">01-01-2024</td>
+                                <td th:text="${booking.numberOfPeople}">2</td>
+                                <td th:text="${'$' + booking.totalPrice}">$200</td>
+                                <td>
+                                    <span th:class="${'badge ' + 
+                                        (booking.status == 'PENDING' ? 'bg-warning' : 
+                                        (booking.status == 'CONFIRMED' ? 'bg-success' : 'bg-danger'))}"
+                                        th:text="${booking.status}">
+                                        Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <!-- Admin Actions -->
+                                    <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                                        <button class="btn btn-success btn-sm" 
+                                                th:if="${booking.status == 'PENDING'}"
+                                                th:onclick="'updateStatus(' + ${booking.id} + ', \'CONFIRMED\')'">
+                                            Confirm
+                                        </button>
+                                        <button class="btn btn-danger btn-sm"
+                                                th:if="${booking.status == 'PENDING'}"
+                                                th:onclick="'updateStatus(' + ${booking.id} + ', \'CANCELLED\')'">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                    <!-- User Actions -->
+                                    <div th:if="${#authorization.expression('hasRole(''USER'')')}">
+                                        <button class="btn btn-danger btn-sm"
+                                                th:if="${booking.status == 'PENDING'}"
+                                                th:onclick="'cancelBooking(' + ${booking.id} + ')'">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <script th:inline="javascript">
+        function updateStatus(bookingId, status) {
+            if (confirm('Are you sure you want to ' + status.toLowerCase() + ' this booking?')) {
+                fetch(`/api/bookings/${bookingId}/status?status=${status}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Failed to update booking status');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            }
+        }
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                updateStatus(bookingId, 'CANCELLED');
+            }
+        }
+
+        function filterBookings() {
+            const status = document.getElementById('statusFilter').value;
+            window.location.href = `/bookings?status=${status}`;
+        }
+    </script>
+
+    <style>
+        .badge {
+            padding: 8px 12px;
+            font-size: 0.9em;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</body>
+</html>

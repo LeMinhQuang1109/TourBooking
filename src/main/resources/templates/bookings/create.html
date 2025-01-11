@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header('Book Tour')">
+</head>
+<body>
+    <nav th:replace="fragments/header :: navbar"></nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Book Tour</h3>
+                        <div class="tour-details mb-4">
+                            <h4 th:text="${tour.name}">Tour Name</h4>
+                            <p th:text="${tour.description}">Tour Description</p>
+                            <p>Price per person: <span th:text="${'$' + tour.price}">$100</span></p>
+                        </div>
+
+                        <form th:action="@{/bookings/create}" method="post">
+                            <input type="hidden" name="tourId" th:value="${tour.id}">
+                            
+                            <div class="mb-3">
+                                <label for="numberOfPeople" class="form-label">Number of People</label>
+                                <input type="number" class="form-control" id="numberOfPeople" name="numberOfPeople" 
+                                       min="1" required onchange="calculateTotal()">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contactPhone" class="form-label">Contact Phone</label>
+                                <input type="tel" class="form-control" id="contactPhone" name="contactPhone" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Total Price</label>
+                                <h4 id="totalPrice">$0</h4>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const tourPrice = /*[[${tour.price}]]*/ 0;
+        
+        function calculateTotal() {
+            const people = document.getElementById('numberOfPeople').value;
+            const total = tourPrice * people;
+            document.getElementById('totalPrice').textContent = '$' + total;
+        }
+        /*]]>*/
+    </script>
+</body>
+</html>

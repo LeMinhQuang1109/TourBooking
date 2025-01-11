@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header('My Profile')">
+</head>
+<body>
+    <nav th:replace="fragments/header :: navbar"></nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Profile Information</h4>
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <p class="form-control-static" th:text="${user.username}">username</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <p class="form-control-static" th:text="${user.fullName}">Full Name</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <p class="form-control-static" th:text="${user.email}">email@example.com</p>
+                        </div>
+                        <a href="/users/edit-profile" class="btn btn-primary">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Recent Bookings</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tour</th>
+                                        <th>Date</th>
+                                        <th>People</th>
+                                        <th>Status</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="booking : ${recentBookings}">
+                                        <td th:text="${booking.tour.name}">Tour name</td>
+                                        <td th:text="${#temporals.format(booking.bookingDate, 'dd-MM-yyyy')}">Date</td>
+                                        <td th:text="${booking.numberOfPeople}">2</td>
+                                        <td th:text="${booking.status}">Status</td>
+                                        <td th:text="${'$' + booking.totalPrice}">$200</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
