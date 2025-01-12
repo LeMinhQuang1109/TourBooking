@@ -9,7 +9,7 @@ public class Tour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, length = 255) // Tên tour, không được null
     private String name;
@@ -21,7 +21,7 @@ public class Tour {
     private double price;
 
     @Column // Thời gian tour (số ngày)
-    private Integer duration;
+    private int duration;
 
     @Column(length = 255) // Địa điểm tour
     private String location;
@@ -44,11 +44,11 @@ public class Tour {
     }
 
     // Getters và Setters
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -76,11 +76,11 @@ public class Tour {
         this.price = price;
     }
 
-    public Integer getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 

@@ -21,39 +21,26 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Cập nhật lại role cho tất cả user hiện có
-        List<User> users = userRepository.findAll();
-        for (User user : users) {
-            // Kiểm tra và sửa role
-            if (user.getRole() != null && !user.getRole().startsWith("ROLE_")) {
-                String newRole = "ROLE_" + user.getRole();
-                user.setRole(newRole);
-                userRepository.save(user);
-                System.out.println("Updated role for user: " + user.getUsername() + " to: " + newRole);
-            }
-
-            // Kiểm tra và mã hóa mật khẩu nếu cần
-            if (!user.getPassword().startsWith("$2a$")) {
-                String rawPassword = user.getPassword();
-                user.setPassword(passwordEncoder.encode(rawPassword));
-                userRepository.save(user);
-                System.out.println("Encrypted password for user: " + user.getUsername());
-            }
+        // Kiểm tra nếu chưa có admin account
+        if (!userRepository.existsByUsername("admin")) {
+            User adminUser = new User();
+            adminUser.setUsername("admin");
+            adminUser.setPassword(passwordEncoder.encode("admin123"));
+            adminUser.setEmail("admin@example.com");
+            adminUser.setFullName("Administrator");
+            adminUser.setRole("ROLE_ADMIN");
+            userRepository.save(adminUser);
         }
 
-        // Tạo tài khoản admin nếu chưa có
-        if (!userRepository.existsByUsername("admin")) {
-            User admin = new User();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setEmail("admin@example.com");
-            admin.setFullName("System Administrator");
-            admin.setRole("ROLE_ADMIN");
-            admin.setActive(true);
-            admin.setCreatedAt(LocalDateTime.now());
-            
-            userRepository.save(admin);
-            System.out.println("Admin account created successfully!");
+        // Kiểm tra nếu chưa có test user
+        if (!userRepository.existsByUsername("user")) {
+            User testUser = new User();
+            testUser.setUsername("user");
+            testUser.setPassword(passwordEncoder.encode("user123"));
+            testUser.setEmail("user@example.com");
+            testUser.setFullName("Test User");
+            testUser.setRole("ROLE_USER");
+            userRepository.save(testUser);
         }
     }
 } 

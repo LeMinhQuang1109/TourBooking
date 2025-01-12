@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,14 +97,6 @@ public class UserService {
     }
 
     @Transactional
-    public void toggleUserStatus(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setActive(!user.isActive());
-        userRepository.save(user);
-    }
-
-    @Transactional
     public void changeUserRole(Long userId, String newRole) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -119,6 +113,13 @@ public class UserService {
     public void updateUser(Long userId, User updatedUser) {
         User user = findById(userId);
         
+        // Kiểm tra username mới có bị trùng không (nếu username thay đổi)
+        if (!user.getUsername().equals(updatedUser.getUsername())) {
+            if (userRepository.existsByUsername(updatedUser.getUsername())) {
+                throw new RuntimeException("Username already exists");
+            }
+        }
+
         // Kiểm tra email mới có bị trùng không (nếu email thay đổi)
         if (!user.getEmail().equals(updatedUser.getEmail())) {
             if (userRepository.existsByEmail(updatedUser.getEmail())) {
@@ -126,11 +127,11 @@ public class UserService {
             }
         }
 
-        // Cập nhật thông tin (không cập nhật username)
+        // Cập nhật thông tin
+        user.setUsername(updatedUser.getUsername());
         user.setFullName(updatedUser.getFullName());
         user.setEmail(updatedUser.getEmail());
         user.setRole(updatedUser.getRole());
-        user.setActive(updatedUser.isActive());
 
         // Cập nhật mật khẩu nếu có
         String newPassword = updatedUser.getPassword();
@@ -154,5 +155,21 @@ public class UserService {
         }
         
         userRepository.delete(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return new org.springframework.security.core.userdetails.User(
+            user.getUsername(),
+            user.getPassword(),
+            true, // Luôn active
+            true, // accountNonExpired
+            true, // credentialsNonExpired
+            true, // accountNonLocked
+            getAuthorities(user.getRole())
+        );
     }
 }

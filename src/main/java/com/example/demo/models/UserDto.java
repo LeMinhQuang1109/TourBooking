@@ -6,8 +6,7 @@ public class UserDto {
     @NotBlank(message = "Username is required")
     private String username;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Size(min = 6, message = "Password must be at least 6 characters long", groups = OnCreate.class)
     private String password;
 
     @NotBlank(message = "Email is required")
@@ -15,38 +14,51 @@ public class UserDto {
     private String email;
 
     private String fullName;
+    
+    private String role;
 
-	public String getUsername() {
-		return username;
-	}
+    // Định nghĩa interface cho validation groups
+    public interface OnCreate {}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getFullName() {
-		return fullName;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     // Constructors, getters, and setters
     // ... (add standard getters and setters for all fields)

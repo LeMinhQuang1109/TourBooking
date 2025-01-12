@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Same CSS as dashboard.html -->
+</head>
+<body>
+    <!-- Same sidebar as dashboard.html -->
+
+    <main class="main-content">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1>Tour Management</h1>
+            <a href="/admin/tours/add" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add New Tour
+            </a>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Duration</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="tour : ${tours}">
+                            <td th:text="${tour.id}"></td>
+                            <td th:text="${tour.name}"></td>
+                            <td th:text="${tour.description}"></td>
+                            <td th:text="${tour.price}"></td>
+                            <td th:text="${tour.duration}"></td>
+                            <td th:text="${#temporals.format(tour.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td>
+                                <a th:href="@{/admin/tours/{id}/edit(id=${tour.id})}" 
+                                   class="btn btn-primary btn-sm me-2">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button class="btn btn-danger btn-sm"
+                                        th:data-tour-id="${tour.id}"
+                                        onclick="deleteTour(this)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    function deleteTour(button) {
+        if (confirm('Are you sure you want to delete this tour?')) {
+            const tourId = button.getAttribute('data-tour-id');
+            
+            fetch(`/admin/tours/${tourId}/delete`, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result === 'success') {
+                    button.closest('tr').remove();
+                    alert('Tour deleted successfully');
+                } else {
+                    alert('Error deleting tour: ' + result);
+                }
+            });
+        }
+    }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
