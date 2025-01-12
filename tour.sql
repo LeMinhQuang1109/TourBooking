@@ -35,7 +35,7 @@ CREATE TABLE `bookings` (
   KEY `tour_id` (`tour_id`),
   CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`tour_id`) REFERENCES `tours` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,8 +44,33 @@ CREATE TABLE `bookings` (
 
 LOCK TABLES `bookings` WRITE;
 /*!40000 ALTER TABLE `bookings` DISABLE KEYS */;
-INSERT INTO `bookings` VALUES (3,5,11,'2025-01-12 16:04:57',12,36000000,1),(4,5,11,'2025-01-12 16:17:53',6,18000000,1);
+INSERT INTO `bookings` VALUES (5,5,13,'2025-01-12 18:59:40',15,27000000,2);
 /*!40000 ALTER TABLE `bookings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `categories`
+--
+
+DROP TABLE IF EXISTS `categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `categories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `categories`
+--
+
+LOCK TABLES `categories` WRITE;
+/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+INSERT INTO `categories` VALUES (1,'Miền Bắc','Các tour du lịch miền Bắc Việt Nam'),(2,'Miền Trung','Các tour du lịch miền Trung Việt Nam'),(3,'Miền Nam','Các tour du lịch miền Nam Việt Nam');
+/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -99,8 +124,11 @@ CREATE TABLE `tours` (
   `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `status` int DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `category_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `tours_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +137,7 @@ CREATE TABLE `tours` (
 
 LOCK TABLES `tours` WRITE;
 /*!40000 ALTER TABLE `tours` DISABLE KEYS */;
-INSERT INTO `tours` VALUES (3,'Tour Phú Quốc','https://images.unsplash.com/photo-1572408289226-005349b31cc5?q=80&w=2033&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Thư giãn tại bãi biển Phú Quốc trong 4 ngày.',2500000,4,20,20,'2025-01-12','Phú Quốc',NULL,1),(7,'Tour Đà Nẵng - Hội An','https://plus.unsplash.com/premium_photo-1690960644375-6f2399a08ebc?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Khám phá vẻ đẹp của Đà Nẵng và phố cổ Hội An trong 3 ngày.',2500000,3,30,25,'2025-01-12','Đà Nẵng',NULL,1),(8,'Tour Hạ Long - Quảng Ninh','https://images.unsplash.com/photo-1573522249358-b57a4c7530c6?q=80&w=1773&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Trải nghiệm vịnh Hạ Long - Di sản thiên nhiên thế giới.',3500000,2,20,15,'2025-01-12','Quảng Ninh',NULL,1),(9,'Tour Phú Quốc','https://images.unsplash.com/photo-1687707939240-2a1ff390459a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Thư giãn tại thiên đường biển đảo Phú Quốc.',4500000,4,25,0,'2025-01-12','Phú Quốc',NULL,0),(10,'Tour Đà Lạt','https://images.unsplash.com/photo-1625125083143-09732aee1f36?q=80&w=1892&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Khám phá thành phố ngàn hoa Đà Lạt.',2000000,3,35,30,'2025-01-30','Đà Lạt',NULL,1),(11,'Tour Sapa','https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Chinh phục đỉnh Fansipan và khám phá văn hóa dân tộc Tây Bắc.',3000000,4,20,0,'2025-01-12','Sapa',NULL,0);
+INSERT INTO `tours` VALUES (12,'Du lịch Vịnh Hạ Long','https://images.unsplash.com/photo-1528127269322-539801943592?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGglRTElQkElQTElMjBsb25nfGVufDB8fDB8fHww','Khám phá Vịnh Hạ Long xinh đẹp trên du thuyền cao cấp. Tham quan các hang động, chèo thuyền kayak và thưởng thức hải sản tươi ngon.',2500000,3,20,20,'2025-01-13','Vịnh Hạ Long',NULL,1,1),(13,'Khám phá Sapa','https://images.unsplash.com/photo-1666277249933-a026bd6a948c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNhcGF8ZW58MHx8MHx8fDA%3D','Trekking qua những thửa ruộng bậc thang tuyệt đẹp, gặp gỡ đồng bào dân tộc thiểu số, và trải nghiệm homestay với gia đình địa phương.',1800000,2,15,15,'2025-01-13','Sapa',NULL,1,1),(14,'Khám phá Ninh Bình','https://images.unsplash.com/photo-1564525450279-3c868f65d2bc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG5pbmglMjBiaW5ofGVufDB8fDB8fHww','Thăm cố đô, khám phá hang động bằng thuyền ở Tràng An, và đạp xe qua những cảnh đồng quê thơ mộng.',1500000,2,20,20,'2025-01-28','Ninh Bình',NULL,1,1),(15,'Khám phá Hà Nội','https://plus.unsplash.com/premium_photo-1691960159290-6f4ace6e6c4c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aGElMjBub2l8ZW58MHx8MHx8fDA%3D','Khám phá nét quyến rũ của phố cổ Hà Nội, thăm các di tích lịch sử và thưởng thức ẩm thực đường phố.',900000,1,25,25,'2025-01-13','Hà Nội',NULL,1,1),(16,'Khám phá Cố đô Huế','https://images.unsplash.com/photo-1692449452966-661371c6def1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aHUlRTElQkElQkZ8ZW58MHx8MHx8fDA%3D','Khám phá Kinh thành Huế, du ngoạn sông Hương và thăm các lăng tẩm hoàng gia.',1200000,2,25,25,'2025-01-13','Huế',NULL,1,2),(17,'Phố cổ Hội An','https://plus.unsplash.com/premium_photo-1690960644375-6f2399a08ebc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG9pJTIwYW58ZW58MHx8MHx8fDA%3D','Dạo bước qua phố cổ quyến rũ, tham gia lớp học nấu ăn và thăm các làng nghề thủ công lân cận.',1500000,2,20,20,'2025-01-13','Hội An',NULL,1,2),(18,'Nghỉ dưỡng Đà Nẵng','https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZGElMjBuYW5nfGVufDB8fDB8fHww','Thư giãn trên bãi biển đẹp, thăm Ngũ Hành Sơn và thưởng thức ẩm thực hải sản.',2000000,3,30,30,'2025-01-29','Đà Nẵng',NULL,1,2),(20,'Khám phá Đồng bằng sông Cửu Long','https://plus.unsplash.com/premium_photo-1661938316964-26c0a1d0f123?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fG1la29uZyUyMGRlbHRhfGVufDB8fDB8fHww','Thăm chợ nổi, đạp xe qua các làng quê và trải nghiệm cuộc sống trên sông nước.',1200000,2,20,20,'2025-01-24','Đồng Bằng sông Mê Kông',NULL,1,3),(21,'Nghỉ dưỡng Phú Quốc','https://images.unsplash.com/photo-1732243395944-cb3ff9311091?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHBodSUyMHF1b2N8ZW58MHx8MHx8fDA%3D','Tận hưởng bãi biển hoang sơ, lặn ngắm san hô và thăm các trang trại ngọc trai, nhà thùng nước mắm.',3500000,4,25,25,'2025-01-13','Phú Quốc',NULL,1,3),(23,'Chợ nổi Cần Thơ','https://images.unsplash.com/photo-1680711211916-195a00308786?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGNhbiUyMHRob3xlbnwwfHwwfHx8MA%3D%3D','Tham quan chợ nổi Cái Răng buổi sáng sớm, đạp xe qua các vườn trái cây.',1100000,2,20,20,'2025-01-24','Cần Thơ',NULL,1,3),(26,'sdfg','12','sdf',1,12,12,0,'2025-01-29','12',NULL,0,1);
 /*!40000 ALTER TABLE `tours` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,4 +181,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-12 23:30:08
+-- Dump completed on 2025-01-13  2:44:18
