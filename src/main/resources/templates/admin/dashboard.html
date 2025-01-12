@@ -69,12 +69,6 @@
                         Booking Management
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/">
-                        <i class="bi bi-house"></i>
-                        Back to Site
-                    </a>
-                </li>
             </ul>
         </div>
     </nav>
@@ -101,41 +95,100 @@
         </div>
 
         <!-- Statistics Cards -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <h3>Total Users</h3>
-                    <p class="h2" th:text="${totalUsers}">0</p>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4 mb-4">Tổng quan hệ thống</h1>
+            
+            <!-- Stats Cards Row -->
+            <div class="row g-4">
+                <!-- Users Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">Người dùng</h6>
+                                    <h2 class="mb-0" th:text="${totalUsers}">0</h2>
+                                </div>
+                                <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                    <i class="bi bi-people fs-3 text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/users" class="text-decoration-none">
+                                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tours Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">Tour du lịch</h6>
+                                    <h2 class="mb-0" th:text="${totalTours}">0</h2>
+                                </div>
+                                <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                                    <i class="bi bi-map fs-3 text-success"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/tours" class="text-decoration-none">
+                                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bookings Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">Đặt tour</h6>
+                                    <h2 class="mb-0" th:text="${totalBookings}">0</h2>
+                                </div>
+                                <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                                    <i class="bi bi-calendar-check fs-3 text-warning"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/bookings" class="text-decoration-none">
+                                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">Doanh thu</h6>
+                                    <h2 class="mb-0" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">0 VNĐ</h2>
+                                </div>
+                                <div class="rounded-circle bg-info bg-opacity-10 p-3">
+                                    <i class="bi bi-currency-dollar fs-3 text-info"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/bookings" class="text-decoration-none">
+                                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- Add more stat cards as needed -->
-        </div>
 
-        <!-- Recent Users Table -->
-        <div class="card mt-4">
-            <div class="card-header">
-                <h3>Recent Users</h3>
-            </div>
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Joined Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="user : ${recentUsers}">
-                            <td th:text="${user.username}"></td>
-                            <td th:text="${user.fullName}"></td>
-                            <td th:text="${user.email}"></td>
-                            <td th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </main>
 

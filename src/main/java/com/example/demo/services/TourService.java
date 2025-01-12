@@ -42,4 +42,8 @@ public class TourService {
         }
         return tourRepository.save(tour);
     }
+
+    public long countTours() {
+        return tourRepository.count();
+    }
 }

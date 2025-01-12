@@ -52,16 +52,19 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        // Thống kê cơ bản
-        long totalUsers = userService.getUserCount();
-        long totalTours = tourRepository.count();
-        List<User> recentUsers = userService.getRecentUsers();
-        List<Tour> recentTours = tourRepository.findTop5ByOrderByCreatedAtDesc();
+        // Lấy tổng số liệu
+        long totalUsers = userService.countUsers();
+        long totalTours = tourService.countTours();
+        long totalBookings = bookingService.countBookings();
+        
+        // Tính tổng doanh thu
+        double totalRevenue = bookingService.calculateTotalRevenue();
         
         model.addAttribute("totalUsers", totalUsers);
         model.addAttribute("totalTours", totalTours);
-        model.addAttribute("recentUsers", recentUsers);
-        model.addAttribute("recentTours", recentTours);
+        model.addAttribute("totalBookings", totalBookings);
+        model.addAttribute("totalRevenue", totalRevenue);
+        
         return "admin/dashboard";
     }
 
