@@ -134,4 +134,15 @@ public class BookingService {
     public List<Booking> getBookingsByTour(Tour tour) {
         return bookingRepository.findByTourOrderByBookingDateDesc(tour);
     }
+
+    public long countBookings() {
+        return bookingRepository.count();
+    }
+
+    public double calculateTotalRevenue() {
+        return bookingRepository.findAll().stream()
+                .filter(booking -> booking.getStatus() == 1) // Chỉ tính các booking đã confirm
+                .mapToDouble(Booking::getTotalPrice)
+                .sum();
+    }
 } 
