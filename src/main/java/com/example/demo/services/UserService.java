@@ -93,13 +93,12 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-            .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Transactional
     public void changeUserRole(Long userId, String newRole) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = findById(userId);
         user.setRole(newRole);
         userRepository.save(user);
     }
@@ -113,30 +112,28 @@ public class UserService {
     public void updateUser(Long userId, User updatedUser) {
         User user = findById(userId);
         
-        // Kiểm tra username mới có bị trùng không (nếu username thay đổi)
+        // Kiểm tra username mới có bị trùng không
         if (!user.getUsername().equals(updatedUser.getUsername())) {
             if (userRepository.existsByUsername(updatedUser.getUsername())) {
                 throw new RuntimeException("Username already exists");
             }
         }
 
-        // Kiểm tra email mới có bị trùng không (nếu email thay đổi)
+        // Kiểm tra email mới có bị trùng không
         if (!user.getEmail().equals(updatedUser.getEmail())) {
             if (userRepository.existsByEmail(updatedUser.getEmail())) {
                 throw new RuntimeException("Email already exists");
             }
         }
 
-        // Cập nhật thông tin
         user.setUsername(updatedUser.getUsername());
-        user.setFullName(updatedUser.getFullName());
         user.setEmail(updatedUser.getEmail());
+        user.setFullName(updatedUser.getFullName());
         user.setRole(updatedUser.getRole());
 
-        // Cập nhật mật khẩu nếu có
-        String newPassword = updatedUser.getPassword();
-        if (newPassword != null && !newPassword.trim().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(newPassword));
+        // Cập nhật password nếu có
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().trim().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
 
         userRepository.save(user);
@@ -144,32 +141,6 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
-        User user = findById(userId);
-        
-        // Không cho phép xóa tài khoản admin cuối cùng
-        if (user.getRole().equals("ROLE_ADMIN")) {
-            long adminCount = userRepository.countByRole("ROLE_ADMIN");
-            if (adminCount <= 1) {
-                throw new RuntimeException("Cannot delete the last admin account");
-            }
-        }
-        
-        userRepository.delete(user);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return new org.springframework.security.core.userdetails.User(
-            user.getUsername(),
-            user.getPassword(),
-            true, // Luôn active
-            true, // accountNonExpired
-            true, // credentialsNonExpired
-            true, // accountNonLocked
-            getAuthorities(user.getRole())
-        );
+        userRepository.deleteById(userId);
     }
 }

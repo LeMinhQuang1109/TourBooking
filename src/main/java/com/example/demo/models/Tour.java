@@ -2,48 +2,41 @@ package com.example.demo.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tours")
 public class Tour {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 255) // Tên tour, không được null
     private String name;
-
-    @Column(length = 255) // Mô tả tour
+    
+    @Column(name = "image_url")
+    private String imageUrl;
+    
     private String description;
-
-    @Column(nullable = false) // Giá tour, không được null
-    private double price;
-
-    @Column // Thời gian tour (số ngày)
-    private int duration;
-
-    @Column(length = 255) // Địa điểm tour
+    private Double price;
+    private Integer duration;
     private String location;
-
-    @Column(name = "created_at", updatable = false) // Ngày tạo (không thay đổi sau khi tạo)
+    
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    
+    @Column(name = "max_people")
+    private Integer maxPeople;
+    
+    @Column(name = "available_slots")
+    private Integer availableSlots;
+    
+    private Integer status;  // 1: Available, 0: Sold out
+    
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Constructor không tham số (bắt buộc với Hibernate)
-    public Tour() {
-    }
-
-    // Constructor đầy đủ
-    public Tour(String name, String description, double price, Integer duration, String location, LocalDateTime createdAt) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.duration = duration;
-        this.location = location;
-        this.createdAt = createdAt;
-    }
-
-    // Getters và Setters
+    // Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -60,6 +53,14 @@ public class Tour {
         this.name = name;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -68,19 +69,19 @@ public class Tour {
         this.description = description;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -92,24 +93,43 @@ public class Tour {
         this.location = location;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public Integer getMaxPeople() {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(Integer maxPeople) {
+        this.maxPeople = maxPeople;
+    }
+
+    public Integer getAvailableSlots() {
+        return availableSlots;
+    }
+
+    public void setAvailableSlots(Integer availableSlots) {
+        this.availableSlots = availableSlots;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Tour{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", duration=" + duration +
-                ", location='" + location + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
     }
 }
