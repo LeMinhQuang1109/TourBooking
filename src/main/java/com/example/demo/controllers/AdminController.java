@@ -25,6 +25,8 @@ import com.example.demo.services.UserService;
 import com.example.demo.services.TourService;
 import com.example.demo.services.BookingService;
 import com.example.demo.models.Booking;
+import com.example.demo.models.Category;
+import com.example.demo.services.CategoryService;
 
 import jakarta.validation.Valid;
 
@@ -44,6 +46,9 @@ public class AdminController {
     
     @Autowired
     private BookingService bookingService;
+    
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -70,30 +75,25 @@ public class AdminController {
     @GetMapping("/tours/add")
     public String showAddTourForm(Model model) {
         model.addAttribute("tour", new Tour());
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "admin/tour-form";
     }
 
     @GetMapping("/tours/{id}/edit")
     public String showEditTourForm(@PathVariable Integer id, Model model) {
-        Tour tour = tourRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Tour not found"));
+        Tour tour = tourService.getTourById(id);
         model.addAttribute("tour", tour);
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "admin/tour-form";
     }
 
     @PostMapping("/tours/save")
-    public String saveTour(@ModelAttribute Tour tour, RedirectAttributes redirectAttributes) {
-        try {
-            boolean isNewTour = (tour.getId() == null || tour.getId() == 0);
-            if (isNewTour) {
-                tour.setCreatedAt(LocalDateTime.now());
-            }
-            tourRepository.save(tour);
-            redirectAttributes.addFlashAttribute("successMessage", 
-                isNewTour ? "Tour added successfully!" : "Tour updated successfully!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error saving tour: " + e.getMessage());
-        }
+    public String saveTour(@ModelAttribute Tour tour, 
+                          @RequestParam("categoryId") Integer categoryId) {
+        // Set category before saving
+        Category category = categoryService.getCategoryById(categoryId);
+        tour.setCategory(category);
+        tourService.saveTour(tour);
         return "redirect:/admin/tours";
     }
 

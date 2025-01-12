@@ -33,4 +33,13 @@ public class TourService {
     public List<Tour> getRecentTours() {
         return tourRepository.findTop5ByOrderByCreatedAtDesc();
     }
+
+    public Tour saveTour(Tour tour) {
+        if (tour.getAvailableSlots() != null) {
+            tour.setStatus(tour.getAvailableSlots() > 0 ? 1 : 0);
+        } else {
+            tour.setStatus(1);
+        }
+        return tourRepository.save(tour);
+    }
 }
