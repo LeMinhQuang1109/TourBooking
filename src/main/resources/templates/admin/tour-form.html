@@ -30,6 +30,12 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="imageUrl" class="form-label">Image URL</label>
+                            <input type="text" class="form-control" id="imageUrl" 
+                                   th:field="*{imageUrl}">
+                        </div>
+
+                        <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control" id="description" 
                                       th:field="*{description}" rows="3" required></textarea>
@@ -45,6 +51,38 @@
                             <label for="duration" class="form-label">Duration (days)</label>
                             <input type="number" class="form-control" id="duration" 
                                    th:field="*{duration}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" 
+                                   th:field="*{location}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" 
+                                   th:field="*{startDate}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="maxPeople" class="form-label">Maximum People</label>
+                            <input type="number" class="form-control" id="maxPeople" 
+                                   th:field="*{maxPeople}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="availableSlots" class="form-label">Available Slots</label>
+                            <input type="number" class="form-control" id="availableSlots" 
+                                   th:field="*{availableSlots}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" th:field="*{status}" required>
+                                <option value="1">Available</option>
+                                <option value="0">Sold Out</option>
+                            </select>
                         </div>
 
                         <div class="d-grid gap-2">

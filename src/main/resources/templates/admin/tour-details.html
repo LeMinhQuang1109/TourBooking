@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Details - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+    <!-- Include admin sidebar -->
+    
+    <main class="main-content">
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Tour Details</h2>
+                <a href="/admin/tours" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Tours
+                </a>
+            </div>
+
+            <!-- Tour Information -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img th:if="${tour.imageUrl}" th:src="${tour.imageUrl}" 
+                                 class="img-fluid rounded" alt="Tour image">
+                        </div>
+                        <div class="col-md-8">
+                            <h3 th:text="${tour.name}"></h3>
+                            <p class="text-muted" th:text="${tour.description}"></p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <p><strong>Price:</strong> 
+                                        <span th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
+                                    </p>
+                                    <p><strong>Duration:</strong> 
+                                        <span th:text="${tour.duration} + ' days'"></span>
+                                    </p>
+                                    <p><strong>Location:</strong> 
+                                        <span th:text="${tour.location}"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Start Date:</strong> 
+                                        <span th:text="${#temporals.format(tour.startDate, 'dd-MM-yyyy')}"></span>
+                                    </p>
+                                    <p><strong>Maximum People:</strong> 
+                                        <span th:text="${tour.maxPeople}"></span>
+                                    </p>
+                                    <p><strong>Available Slots:</strong> 
+                                        <span th:text="${tour.availableSlots}"></span>
+                                    </p>
+                                    <p><strong>Status:</strong> 
+                                        <span th:if="${tour.status == 1}" class="badge bg-success">Available</span>
+                                        <span th:if="${tour.status == 0}" class="badge bg-danger">Sold Out</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings List -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Tour Bookings</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>User</th>
+                                    <th>Booking Date</th>
+                                    <th>Number of People</th>
+                                    <th>Total Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="booking : ${bookings}">
+                                    <td th:text="${booking.id}"></td>
+                                    <td>
+                                        <span th:text="${booking.user.fullName}"></span><br>
+                                        <small class="text-muted" th:text="${booking.user.email}"></small>
+                                    </td>
+                                    <td th:text="${#temporals.format(booking.bookingDate, 'dd-MM-yyyy HH:mm')}"></td>
+                                    <td th:text="${booking.numberOfPeople}"></td>
+                                    <td th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                                    <td>
+                                        <span th:if="${booking.status == 0}" class="badge bg-warning">Pending</span>
+                                        <span th:if="${booking.status == 1}" class="badge bg-success">Confirmed</span>
+                                        <span th:if="${booking.status == 2}" class="badge bg-danger">Cancelled</span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${booking.status == 0}" class="btn-group">
+                                            <form th:action="@{/admin/bookings/{id}/confirm(id=${booking.id})}" 
+                                                  method="post" style="display: inline;">
+                                                <button type="submit" class="btn btn-success btn-sm me-1"
+                                                        onclick="return confirm('Are you sure you want to confirm this booking?')">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                            <form th:action="@{/admin/bookings/{id}/reject(id=${booking.id})}" 
+                                                  method="post" style="display: inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('Are you sure you want to reject this booking?')">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${bookings.empty}">
+                                    <td colspan="7" class="text-center">No bookings found for this tour</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

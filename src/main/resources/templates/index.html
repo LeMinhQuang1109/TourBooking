@@ -43,7 +43,18 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">Tour Booking</a>
-            <div class="d-flex align-items-center">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tours">Tours</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="/bookings/my-bookings">My Bookings</a>
+                    </li>
+                </ul>
                 <!-- Show when not logged in -->
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="btn btn-outline-light me-2">Login</a>

@@ -22,6 +22,9 @@ import com.example.demo.models.User;
 import com.example.demo.models.UserDto;
 import com.example.demo.repositories.TourRepository;
 import com.example.demo.services.UserService;
+import com.example.demo.services.TourService;
+import com.example.demo.services.BookingService;
+import com.example.demo.models.Booking;
 
 import jakarta.validation.Valid;
 
@@ -35,6 +38,12 @@ public class AdminController {
     
     @Autowired
     private TourRepository tourRepository;
+    
+    @Autowired
+    private TourService tourService;
+    
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -184,5 +193,15 @@ public class AdminController {
         } catch (Exception e) {
             return "error: " + e.getMessage();
         }
+    }
+
+    @GetMapping("/tours/{id}/details")
+    public String showTourDetails(@PathVariable Integer id, Model model) {
+        Tour tour = tourService.getTourById(id);
+        List<Booking> tourBookings = bookingService.getBookingsByTour(tour);
+        
+        model.addAttribute("tour", tour);
+        model.addAttribute("bookings", tourBookings);
+        return "admin/tour-details";
     }
 }
