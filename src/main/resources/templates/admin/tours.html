@@ -30,6 +30,7 @@
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th>Description</th>
+                                <th>Category</th>  <!-- Thêm cột Category -->
                                 <th>Price</th>
                                 <th>Duration</th>
                                 <th>Location</th>
@@ -51,15 +52,17 @@
                                 </td>
                                 <td th:text="${tour.name}"></td>
                                 <td th:text="${tour.description}"></td>
+                                <td th:text="${tour.category != null ? tour.category.name : '-'}"></td>  <!-- Hiển thị tên category -->
                                 <td th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')}"></td>
                                 <td th:text="${tour.duration}"></td>
                                 <td th:text="${tour.location}"></td>
                                 <td th:text="${#temporals.format(tour.startDate, 'dd-MM-yyyy')}"></td>
                                 <td th:text="${tour.maxPeople}"></td>
                                 <td th:text="${tour.availableSlots}"></td>
+                                <!-- Trong phần table row -->
                                 <td>
-                                    <span th:if="${tour.status == 1}" class="badge bg-success">Available</span>
-                                    <span th:if="${tour.status == 0}" class="badge bg-danger">Sold Out</span>
+                                    <span th:if="${tour.availableSlots > 0}" class="badge bg-success">Available</span>
+                                    <span th:if="${tour.availableSlots == 0}" class="badge bg-danger">Sold Out</span>
                                 </td>
                                 <td>
                                     <a th:href="@{/admin/tours/{id}/details(id=${tour.id})}" 

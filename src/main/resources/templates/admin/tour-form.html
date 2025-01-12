@@ -20,75 +20,68 @@
                     <h3 th:text="${tour.id != null ? 'Edit Tour' : 'Add New Tour'}"></h3>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/admin/tours/save}" th:object="${tour}" method="post">
+                    <form th:action="@{/admin/tours/save}" method="post" th:object="${tour}">
                         <input type="hidden" th:field="*{id}">
                         
                         <div class="mb-3">
                             <label for="name" class="form-label">Tour Name</label>
-                            <input type="text" class="form-control" id="name" 
-                                   th:field="*{name}" required>
+                            <input type="text" class="form-control" id="name" th:field="*{name}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="imageUrl" class="form-label">Image URL</label>
-                            <input type="text" class="form-control" id="imageUrl" 
-                                   th:field="*{imageUrl}">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="categoryId" required>
+                                <option value="">Select category</option>
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}"
+                                        th:text="${category.name}"
+                                        th:selected="${tour.category != null && tour.category.id == category.id}">
+                                </option>
+                            </select>
                         </div>
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" 
-                                      th:field="*{description}" rows="3" required></textarea>
+                            <textarea class="form-control" id="description" th:field="*{description}" rows="3" required></textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label for="price" class="form-label">Price</label>
-                            <input type="number" class="form-control" id="price" 
-                                   th:field="*{price}" required>
+                            <label for="price" class="form-label">Price (VND)</label>
+                            <input type="number" class="form-control" id="price" th:field="*{price}" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="duration" class="form-label">Duration (days)</label>
-                            <input type="number" class="form-control" id="duration" 
-                                   th:field="*{duration}" required>
+                            <input type="number" class="form-control" id="duration" th:field="*{duration}" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="location" class="form-label">Location</label>
-                            <input type="text" class="form-control" id="location" 
-                                   th:field="*{location}" required>
+                            <input type="text" class="form-control" id="location" th:field="*{location}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="startDate" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="startDate" 
-                                   th:field="*{startDate}" required>
+                            <label for="imageUrl" class="form-label">Image URL</label>
+                            <input type="text" class="form-control" id="imageUrl" th:field="*{imageUrl}">
                         </div>
 
                         <div class="mb-3">
                             <label for="maxPeople" class="form-label">Maximum People</label>
-                            <input type="number" class="form-control" id="maxPeople" 
-                                   th:field="*{maxPeople}" required>
+                            <input type="number" class="form-control" id="maxPeople" th:field="*{maxPeople}" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="availableSlots" class="form-label">Available Slots</label>
-                            <input type="number" class="form-control" id="availableSlots" 
-                                   th:field="*{availableSlots}" required>
+                            <input type="number" class="form-control" id="availableSlots" th:field="*{availableSlots}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select class="form-select" id="status" th:field="*{status}" required>
-                                <option value="1">Available</option>
-                                <option value="0">Sold Out</option>
-                            </select>
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Save Tour</button>
-                            <a th:href="@{/admin/tours}" class="btn btn-secondary">Cancel</a>
-                        </div>
+                        <button type="submit" class="btn btn-primary">Save Tour</button>
+                        <a href="/admin/tours" class="btn btn-secondary">Cancel</a>
                     </form>
                 </div>
             </div>

@@ -17,31 +17,81 @@
     </style>
 </head>
 <body>
-    <!-- Include navigation from index.html -->
     <div class="container mt-5">
-        <h2 class="mb-4">Available Tours</h2>
-        
-        <div class="row g-4">
-            <div class="col-md-4" th:each="tour : ${tours}">
-                <div class="card tour-card h-100">
-                    <img th:if="${tour.imageUrl}" th:src="${tour.imageUrl}" 
-                         class="card-img-top tour-image" alt="Tour image">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${tour.name}"></h5>
-                        <p class="card-text" th:text="${tour.description}"></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="h5 mb-0" 
-                                  th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
-                            </span>
-                            <a th:href="@{/tours/{id}(id=${tour.id})}" 
-                               class="btn btn-primary">View Details</a>
+        <!-- Categories Tabs -->
+        <ul class="nav nav-tabs mb-4" id="tourTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-tab" data-bs-toggle="tab" 
+                        data-bs-target="#all" type="button" role="tab">
+                    All Tours
+                </button>
+            </li>
+            <li class="nav-item" role="presentation" th:each="category : ${categories}">
+                <button class="nav-link" th:id="${'tab-' + category.id}" 
+                        data-bs-toggle="tab" th:data-bs-target="${'#category-' + category.id}" 
+                        type="button" role="tab" th:text="${category.name}">
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="tourTabContent">
+            <!-- All Tours Tab -->
+            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4 mb-4" th:each="tour : ${tours}">
+                        <div class="card tour-card h-100">
+                            <img th:if="${tour.imageUrl}" th:src="${tour.imageUrl}" 
+                                 class="card-img-top tour-image" alt="Tour image">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${tour.name}"></h5>
+                                <p class="card-text" th:text="${tour.description}"></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 mb-0" 
+                                          th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
+                                    </span>
+                                    <a th:href="@{/tours/{id}(id=${tour.id})}" 
+                                       class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">
+                                    Duration: <span th:text="${tour.duration}"></span> days |
+                                    Available: <span th:text="${tour.availableSlots}"></span> slots
+                                </small>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <small class="text-muted">
-                            Duration: <span th:text="${tour.duration}"></span> days |
-                            Available: <span th:text="${tour.availableSlots}"></span> slots
-                        </small>
+                </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="tab-pane fade" th:id="${'category-' + category.id}" role="tabpanel" 
+                 th:each="category : ${categories}">
+                <div class="row">
+                    <div class="col-md-4 mb-4" 
+                         th:each="tour : ${toursByCategory.get(category.id)}">
+                        <div class="card tour-card">
+                            <img th:if="${tour.imageUrl}" th:src="${tour.imageUrl}" 
+                                 class="card-img-top tour-image" alt="Tour image">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${tour.name}"></h5>
+                                <p class="card-text" th:text="${tour.description}"></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 mb-0" 
+                                          th:text="${#numbers.formatDecimal(tour.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
+                                    </span>
+                                    <a th:href="@{/tours/{id}(id=${tour.id})}" 
+                                       class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">
+                                    Duration: <span th:text="${tour.duration}"></span> days |
+                                    Available: <span th:text="${tour.availableSlots}"></span> slots
+                                </small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
