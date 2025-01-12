@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.models.Tour;
 import com.example.demo.models.TourDto;
-import com.example.demo.services.TourRepository;
+import com.example.demo.repositories.TourRepository;
 
 import jakarta.validation.Valid;
 

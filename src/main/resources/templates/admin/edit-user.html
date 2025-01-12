@@ -20,33 +20,39 @@
                     <h3>Edit User</h3>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/admin/users/{id}/edit(id=${user.id})}" 
-                          th:object="${user}" 
+                    <form th:action="@{/admin/users/{id}/edit(id=${userId})}" 
+                          th:object="${userDto}" 
                           method="post">
                         
                         <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-control" th:value="${user.username}" readonly>
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" 
+                                   th:field="*{username}" required>
+                            <div class="text-danger" th:if="${#fields.hasErrors('username')}" 
+                                 th:errors="*{username}"></div>
                         </div>
-
-                        <input type="hidden" th:value="${user.username}" name="username">
 
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Full Name</label>
                             <input type="text" class="form-control" id="fullName" 
-                                   th:field="*{fullName}" required>
+                                   th:field="*{fullName}">
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" 
                                    th:field="*{email}" required>
+                            <div class="text-danger" th:if="${#fields.hasErrors('email')}" 
+                                 th:errors="*{email}"></div>
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">New Password</label>
                             <input type="password" class="form-control" id="password" 
-                                   name="password" placeholder="Leave blank to keep current password">
+                                   th:field="*{password}" 
+                                   placeholder="Leave blank to keep current password">
+                            <div class="text-danger" th:if="${#fields.hasErrors('password')}" 
+                                 th:errors="*{password}"></div>
                         </div>
 
                         <div class="mb-3">
@@ -55,16 +61,6 @@
                                 <option value="ROLE_USER">User</option>
                                 <option value="ROLE_ADMIN">Admin</option>
                             </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" 
-                                       id="active" th:field="*{active}">
-                                <label class="form-check-label" for="active">
-                                    Active Account
-                                </label>
-                            </div>
                         </div>
 
                         <div class="d-grid gap-2">
