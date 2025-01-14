@@ -3,6 +3,8 @@ package com.example.demo.models;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tours")
@@ -39,6 +41,9 @@ public class Tour {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
+    private List<Booking> bookings = new ArrayList<>();
 
     // Getters and Setters
     public Integer getId() {
@@ -143,5 +148,13 @@ public class Tour {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }
