@@ -15,4 +15,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     long countByStatus(Integer status);
     List<Booking> findTop5ByOrderByBookingDateDesc();
     List<Booking> findByTourOrderByBookingDateDesc(Tour tour);
+    boolean existsByUserIdAndTourIdAndStatus(Long userId, Integer tourId, Integer status);
 } 
