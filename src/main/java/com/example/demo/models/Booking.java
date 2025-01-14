@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -30,11 +30,11 @@ public class Booking {
     private Integer status; // 0: Pending, 1: Confirmed, 2: Cancelled
 
     // Getters and Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -85,4 +85,4 @@ public class Booking {
     public void setStatus(Integer status) {
         this.status = status;
     }
-}
+} 

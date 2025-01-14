@@ -125,7 +125,7 @@ public class AdminController {
 
     @PostMapping("/users/{userId}/change-role")
     @ResponseBody
-    public String changeUserRole(@PathVariable Long userId, @RequestParam String newRole) {
+    public String changeUserRole(@PathVariable Integer userId, @RequestParam String newRole) {
         try {
             userService.changeUserRole(userId, newRole);
             return "success";
@@ -135,7 +135,7 @@ public class AdminController {
     }
 
     @GetMapping("/users/{userId}/edit")
-    public String editUserForm(@PathVariable Long userId, Model model) {
+    public String editUserForm(@PathVariable Integer userId, Model model) {
         User user = userService.findById(userId);
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getUsername());
@@ -149,7 +149,7 @@ public class AdminController {
     }
 
     @PostMapping("/users/{userId}/edit")
-    public String updateUser(@PathVariable Long userId, 
+    public String updateUser(@PathVariable Integer userId, 
                            @Valid @ModelAttribute("userDto") UserDto userDto,
                            BindingResult bindingResult,
                            RedirectAttributes redirectAttributes) {
@@ -189,7 +189,7 @@ public class AdminController {
 
     @PostMapping("/users/{userId}/delete")
     @ResponseBody
-    public String deleteUser(@PathVariable Long userId) {
+    public String deleteUser(@PathVariable Integer userId) {
         try {
             userService.deleteUser(userId);
             return "success";

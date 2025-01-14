@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.models.Review;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, Integer> {
     List<Review> findByTourIdOrderByCreatedAtDesc(Integer tourId);
-    boolean existsByUserIdAndTourId(Long userId, Integer tourId);
-    Optional<Review> findByUserIdAndTourId(Long userId, Integer tourId);
+    boolean existsByUserIdAndTourId(Integer userId, Integer tourId);
+    Optional<Review> findByUserIdAndTourId(Integer userId, Integer tourId);
 } 

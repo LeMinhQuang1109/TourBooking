@@ -52,7 +52,7 @@ public class BookingService {
     }
 
     @Transactional
-    public void cancelBooking(Long bookingId, User user) {
+    public void cancelBooking(Integer bookingId, User user) {
         Booking booking = bookingRepository.findById(bookingId)
             .orElseThrow(() -> new RuntimeException("Booking not found"));
 
@@ -85,7 +85,7 @@ public class BookingService {
     }
 
     @Transactional
-    public void confirmBooking(Long bookingId) {
+    public void confirmBooking(Integer bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
             .orElseThrow(() -> new RuntimeException("Booking not found"));
 
@@ -98,7 +98,7 @@ public class BookingService {
     }
 
     @Transactional
-    public void rejectBooking(Long bookingId) {
+    public void rejectBooking(Integer bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
             .orElseThrow(() -> new RuntimeException("Booking not found"));
 

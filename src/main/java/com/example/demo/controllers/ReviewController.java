@@ -58,7 +58,7 @@ public class ReviewController {
 
     @PutMapping("/update/{id}")
     @ResponseBody
-    public ResponseEntity<?> updateReview(@PathVariable Long id, 
+    public ResponseEntity<?> updateReview(@PathVariable Integer id, 
                                         @RequestBody Review updatedReview, 
                                         Principal principal) {
         User user = userService.findByUsername(principal.getName());
@@ -85,7 +85,7 @@ public class ReviewController {
 
     @DeleteMapping("/delete/{id}")
     @ResponseBody
-    public ResponseEntity<?> deleteReview(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<?> deleteReview(@PathVariable Integer id, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         Review review = reviewService.getReviewById(id);
         

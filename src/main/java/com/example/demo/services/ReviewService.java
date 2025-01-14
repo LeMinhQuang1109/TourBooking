@@ -18,7 +18,7 @@ public class ReviewService {
     @Autowired
     private BookingRepository bookingRepository;
 
-    public boolean canUserReviewTour(Long userId, Integer tourId) {
+    public boolean canUserReviewTour(Integer userId, Integer tourId) {
         // Kiểm tra xem user đã đặt tour này và tour đã được xác nhận
         return bookingRepository.existsByUserIdAndTourIdAndStatus(userId, tourId, 1);
     }
@@ -32,7 +32,7 @@ public class ReviewService {
         return reviewRepository.findByTourIdOrderByCreatedAtDesc(tourId);
     }
 
-    public boolean hasUserReviewedTour(Long userId, Integer tourId) {
+    public boolean hasUserReviewedTour(Integer userId, Integer tourId) {
         return reviewRepository.existsByUserIdAndTourId(userId, tourId);
     }
 
@@ -40,11 +40,11 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    public void deleteReview(Long reviewId) {
-        reviewRepository.deleteById(reviewId);
+    public void deleteReview(Integer id) {
+        reviewRepository.deleteById(id);
     }
 
-    public Review getReviewById(Long id) {
+    public Review getReviewById(Integer id) {
         return reviewRepository.findById(id).orElse(null);
     }
 
