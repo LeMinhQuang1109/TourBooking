@@ -97,19 +97,19 @@ public class UserService {
     }
 
     @Transactional
-    public void changeUserRole(Long userId, String newRole) {
+    public void changeUserRole(Integer userId, String newRole) {
         User user = findById(userId);
         user.setRole(newRole);
         userRepository.save(user);
     }
 
-    public User findById(Long id) {
+    public User findById(Integer id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+            .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Transactional
-    public void updateUser(Long userId, User updatedUser) {
+    public void updateUser(Integer userId, User updatedUser) {
         User user = findById(userId);
         
         // Kiểm tra username mới có bị trùng không
@@ -140,7 +140,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long userId) {
+    public void deleteUser(Integer userId) {
         userRepository.deleteById(userId);
     }
 

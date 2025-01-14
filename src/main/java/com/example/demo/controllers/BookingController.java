@@ -71,7 +71,7 @@ public class BookingController {
     }
 
     @PostMapping("/{bookingId}/cancel")
-    public String cancelBooking(@PathVariable Long bookingId,
+    public String cancelBooking(@PathVariable Integer bookingId,
                               @AuthenticationPrincipal UserDetails userDetails,
                               RedirectAttributes redirectAttributes) {
         try {

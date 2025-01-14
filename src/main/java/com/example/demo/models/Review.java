@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -35,11 +35,11 @@ public class Review {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

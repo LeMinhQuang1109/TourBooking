@@ -25,7 +25,7 @@ public class AdminReviewController {
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteReview(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteReview(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             reviewService.deleteReview(id);
             redirectAttributes.addFlashAttribute("successMessage", "Đã xóa đánh giá thành công");

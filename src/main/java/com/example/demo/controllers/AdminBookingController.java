@@ -22,7 +22,7 @@ public class AdminBookingController {
     }
 
     @PostMapping("/{id}/confirm")
-    public String confirmBooking(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String confirmBooking(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             bookingService.confirmBooking(id);
             redirectAttributes.addFlashAttribute("successMessage", "Booking confirmed successfully");
@@ -33,7 +33,7 @@ public class AdminBookingController {
     }
 
     @PostMapping("/{id}/reject")
-    public String rejectBooking(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String rejectBooking(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             bookingService.rejectBooking(id);
             redirectAttributes.addFlashAttribute("successMessage", "Booking rejected successfully");
